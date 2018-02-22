@@ -1,4 +1,6 @@
 import java.awt.Color;
+import java.util.Random;
+import java.util.ArrayList;
 
 /**
  * Class BallDemo - a short demonstration showing animation with the 
@@ -23,9 +25,10 @@ public class BallDemo
     /**
      * Simulate two bouncing balls
      */
-    public void bounce()
+    public void bounce(int numBalls)
     {
         int ground = 400;   // position of the ground line
+        ArrayList<BouncingBall> ballsArray = new ArrayList<>(); //Balls ArrayList
 
         myCanvas.setVisible(true);
 
@@ -33,21 +36,28 @@ public class BallDemo
         myCanvas.drawLine(50, ground, 550, ground);
 
         // crate and show the balls
-        BouncingBall ball = new BouncingBall(50, 50, 16, Color.BLUE, ground, myCanvas);
-        ball.draw();
-        BouncingBall ball2 = new BouncingBall(70, 80, 20, Color.RED, ground, myCanvas);
-        ball2.draw();
+        for (int i = 0; i < numBalls; i++){
+            Random r = new Random();
+            int rPosition = r.nextInt(100);
+            int rRadio = r.nextInt(40)+10;
+            Color color = null;
+            color = color.getHSBColor(r.nextInt(255),r.nextInt(255),r.nextInt(255)); //Creates a color based on the HSB color model
+            BouncingBall ball = new BouncingBall(rPosition, rPosition, rRadio, color, ground, myCanvas);
+            ballsArray.add(ball);
+        }
 
         // make them bounce
         boolean finished =  false;
         while(!finished) {
-            myCanvas.wait(50);           // small delay
-            ball.move();
-            ball2.move();
-            // stop once ball has travelled a certain distance on x axis
-            if(ball.getXPosition() >= 550 || ball2.getXPosition() >= 550) {
-                finished = true;
+            for (BouncingBall actualBouncingBall : ballsArray){
+                myCanvas.wait(30);      // small delay
+                actualBouncingBall.move();
+                // stop once ball has travelled a certain distance on x axis
+                if(actualBouncingBall.getXPosition() >= 550) {
+                    finished = true;
+                }
             }
+
         }
     }
 }
